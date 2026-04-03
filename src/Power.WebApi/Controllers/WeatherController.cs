@@ -32,7 +32,7 @@ namespace Power.WebApi.Controllers
 			}
 			else
 			{
-				return Results.BadRequest(new Error("unknown error", ErrorType.ServerError));
+				return Results.BadRequest(current.Error);
 			}
 		}
 		/// <summary>
@@ -43,15 +43,18 @@ namespace Power.WebApi.Controllers
 		[HttpGet("forecast.json")]
 		public async Task<IResult> Forecast(CancellationToken cancellationToken)
 		{
-			Result<dynamic, ErrorList> forecast = await _clientWeatherService.GetForecastAsync(cancellationToken);
+			throw new NotImplementedException();
+			/*
+			Result<WeatherDay, ErrorList> forecast = await _clientWeatherService.GetForecastAsync(cancellationToken);
 			if (forecast.IsSuccess)
 			{
-				return forecast.Value;
+				return Results.Json(forecast.Value);
 			}
 			else
 			{
 				return Results.BadRequest(new Error("unknown error", ErrorType.ServerError));
 			}
+			*/
 		}
 	}
 }

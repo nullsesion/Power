@@ -18,18 +18,43 @@ namespace Power.WebApi
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();
 
-			builder.Services.AddHttpClient<WeatherApiClientService>(client =>
+			IHttpClientBuilder weatherApiClientService = builder.Services.AddHttpClient<WeatherApiClientService>(client =>
 			{
 				IConfigurationSection section = builder.Configuration.GetSection(nameof(WeatherApiClientService));
 				string host = section.GetValue<string>("Host");
 				client.BaseAddress = new Uri(host);
 				client.DefaultRequestHeaders.Add(HeaderNames.UserAgent, "WebApp");
-			})
-			
-			
+			});
+
+			IConfigurationSection section = builder.Configuration.GetSection(nameof(WebProxy));
+			string addressWebProxy = section.GetValue<string>("Address");
+			string userWebProxy = section.GetValue<string>("User");
+			string passwordWebProxy = section.GetValue<string>("Password");
+
+			if (!string.IsNullOrEmpty(addressWebProxy) 
+				&& !string.IsNullOrEmpty(userWebProxy)
+				&& !string.IsNullOrEmpty(passwordWebProxy)
+				)
+			{
+				weatherApiClientService.ConfigurePrimaryHttpMessageHandler(() =>
+				{
+					HttpClientHandler httpClientHandler = new HttpClientHandler
+					{
+						Proxy = new WebProxy()
+						{
+							Address = new Uri(addressWebProxy),
+							BypassProxyOnLocal = false,
+							UseDefaultCredentials = false,
+							Credentials = new NetworkCredential(userWebProxy, passwordWebProxy)
+						},
+						UseProxy = true
+					};
+					return httpClientHandler;
+				});
+			}
+
 			//Microsoft.Extensions.Http.Polly для нестабильных соединений
-			.AddTransientHttpErrorPolicy(policy => policy.WaitAndRetryAsync(3, _ => TimeSpan.FromSeconds(10)))
-			;
+			weatherApiClientService.AddTransientHttpErrorPolicy(policy => policy.WaitAndRetryAsync(3, _ => TimeSpan.FromSeconds(10)));
 
 			builder.Services.AddScoped<WeatherApiClientService>();
 

@@ -1,4 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.VisualBasic;
+using Newtonsoft.Json;
+using Power.WebApi.DomainModel;
+using System;
+
 
 namespace Power.WebApi.Services
 {
@@ -24,35 +28,69 @@ namespace Power.WebApi.Services
 
 			string key = section.GetValue<string>("api_key");
 			_current = $"/v1/current.json?key={key}&q={q}&days={days}&lang={lang}";
-			_forecast = $"/v1/forecast.json?key={key}&q={q}&lang={lang}&days=2";
+			_forecast = $"/v1/forecast.json?key={key}&q={q}&lang={lang}&days={days}";
 		}
 
 		public async Task<Result<Weather, ErrorList>> GetCurrentAsync(CancellationToken cancellationToken)
 		{
 			ErrorList errorList = new ErrorList();
-			Result<dynamic, ErrorList> valueFromUrl = await _TryGetDataFromUrl(_current, cancellationToken);
-			if (valueFromUrl.IsSuccess && valueFromUrl.Value?.current is not null)
+
+			try
 			{
-				Result<Weather> weather = Weather.Create(valueFromUrl.Value?.current);
-				if (weather.IsSuccess)
+				HttpResponseMessage response = await _httpClient.GetAsync(_current, cancellationToken);
+				if (response.IsSuccessStatusCode)
 				{
-					return weather.Value;
+					string jsonResponse = await response.Content.ReadAsStringAsync();
+					dynamic result = JsonConvert.DeserializeObject(jsonResponse);
+					if (result?.current is not null)
+					{
+						Result<Weather> weather = Weather.Create(result?.current);
+						if (weather.IsSuccess)
+						{
+							return weather.Value;
+						}
+						else
+						{
+							errorList.AddError(new Error(weather.Error, ErrorType.ServerError));
+							return Result.Failure<Weather, ErrorList>(errorList);
+						}
+					}
+					return Result.Success<Weather, ErrorList>(result);
 				}
-				errorList.AddError(new Error(weather.Error, ErrorType.ServerError));
+				errorList.AddError(new Error("Invalid external I/O operation", ErrorType.External));
+				return Result.Failure<Weather, ErrorList>(errorList);
 			}
-			return Result.Failure<Weather, ErrorList>(valueFromUrl.Error);
+			catch (Exception)
+			{
+				errorList.AddError(new Error("Not correct parsing or external I/O operation", ErrorType.External));
+				return Result.Failure<Weather, ErrorList>(errorList);
+			}
 		}
 
-		public async Task<Result<dynamic, ErrorList>> GetForecastAsync(CancellationToken cancellationToken)
+		public async Task<Result<WeatherDay[], ErrorList>> GetForecastAsync(CancellationToken cancellationToken)
 		{
-			var valueForecastFromUrl = await _TryGetDataFromUrl(_forecast, cancellationToken);
+			Result<dynamic, ErrorList> valueForecastFromUrl = await _TryGetDataFromUrl(_forecast, cancellationToken);
 			if (valueForecastFromUrl.IsSuccess)
 			{
+				List<WeatherDay> result = new List<WeatherDay>();
+				var dayCollection = valueForecastFromUrl.Value?.forecast?.forecastday;
+				foreach(var day in dayCollection)
+				{
+					//todo: исправить
+					dynamic w = day.day;
+					DateTime wd = (DateTime)day.date;
+					Result<WeatherDay> d = WeatherDay.Create(w, wd);
+					if (d.IsSuccess)
+					{
+						result.Add(d.Value);
+					}
+				}
 				return valueForecastFromUrl.Value;
 			}
-			return Result.Failure<dynamic, ErrorList>(valueForecastFromUrl.Error);
+			return Result.Failure<WeatherDay[], ErrorList>(valueForecastFromUrl.Error);
 		}
 
+		
 		private async Task<Result<dynamic, ErrorList>> _TryGetDataFromUrl(string uri, CancellationToken cancellationToken)
 		{
 			ErrorList errorList = new ErrorList();
@@ -74,5 +112,6 @@ namespace Power.WebApi.Services
 				return Result.Failure<dynamic, ErrorList>(errorList);
 			}
 		}
+		
 	}
 }
