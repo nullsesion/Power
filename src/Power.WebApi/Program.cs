@@ -1,6 +1,10 @@
 ﻿using Microsoft.Net.Http.Headers;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Polly;
+using Power.WebApi.Interfaces;
 using Power.WebApi.Services;
+using Refit;
 using System.Net;
 
 namespace Power.WebApi
@@ -18,7 +22,21 @@ namespace Power.WebApi
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();
 
-			IHttpClientBuilder weatherApiClientService = builder.Services.AddHttpClient<WeatherApiClientService>(client =>
+			//добавить refit настроить его
+			var settings = new RefitSettings
+			{
+				ContentSerializer = new NewtonsoftJsonContentSerializer(
+					new JsonSerializerSettings
+					{
+						ContractResolver = new DefaultContractResolver
+						{
+							NamingStrategy = new SnakeCaseNamingStrategy()
+						}
+					})
+			};
+			IHttpClientBuilder weatherApiClientService = builder.Services
+			.AddRefitClient<IWeatherApi>(settings)
+			.ConfigureHttpClient(client =>
 			{
 				IConfigurationSection section = builder.Configuration.GetSection(nameof(WeatherApiClientService));
 				string host = section.GetValue<string>("Host");
@@ -26,12 +44,15 @@ namespace Power.WebApi
 				client.DefaultRequestHeaders.Add(HeaderNames.UserAgent, "WebApp");
 			});
 
+
 			IConfigurationSection section = builder.Configuration.GetSection(nameof(WebProxy));
 			string addressWebProxy = section.GetValue<string>("Address");
 			string userWebProxy = section.GetValue<string>("User");
 			string passwordWebProxy = section.GetValue<string>("Password");
 
-			if (!string.IsNullOrEmpty(addressWebProxy) 
+			
+			//проверка на наличие настроек прокси
+			if (!string.IsNullOrEmpty(addressWebProxy)
 				&& !string.IsNullOrEmpty(userWebProxy)
 				&& !string.IsNullOrEmpty(passwordWebProxy)
 				)
@@ -52,6 +73,7 @@ namespace Power.WebApi
 					return httpClientHandler;
 				});
 			}
+			
 
 			//Microsoft.Extensions.Http.Polly для нестабильных соединений
 			weatherApiClientService.AddTransientHttpErrorPolicy(policy => policy.WaitAndRetryAsync(3, _ => TimeSpan.FromSeconds(10)));

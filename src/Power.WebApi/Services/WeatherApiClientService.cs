@@ -1,117 +1,80 @@
-﻿using Microsoft.VisualBasic;
-using Newtonsoft.Json;
-using Power.WebApi.DomainModel;
-using System;
-
+﻿using Power.WebApi.DomainModel.Dto;
+using Power.WebApi.Interfaces;
 
 namespace Power.WebApi.Services
 {
 	public class WeatherApiClientService
 	{
-		private readonly string _host;
-		private readonly string _current;
-		private readonly string _forecast;
-
-		private readonly HttpClient _httpClient;
+		private readonly IWeatherApi _weatherApi;
 		private readonly IConfiguration _configuration;
 
-		public WeatherApiClientService(IHttpClientFactory clientFactory, IConfiguration configuration)
+		private readonly string _key;
+		private readonly string _q;
+		private readonly int _days;
+		private readonly string _lang;
+
+		public WeatherApiClientService(IWeatherApi weatherApi, IConfiguration configuration)
 		{
-			_httpClient = clientFactory.CreateClient(nameof(WeatherApiClientService));
+			_weatherApi = weatherApi;
 			_configuration = configuration;
+
 			var section = _configuration.GetSection(nameof(WeatherApiClientService));
 
-			_host = section.GetValue<string>("Host") ?? "";
-			var q = section.GetValue<string>("q");
-			var days = section.GetValue<int>("days");
-			var lang = section.GetValue<string>("lang");
-
-			string key = section.GetValue<string>("api_key");
-			_current = $"/v1/current.json?key={key}&q={q}&days={days}&lang={lang}";
-			_forecast = $"/v1/forecast.json?key={key}&q={q}&lang={lang}&days={days}";
+			_key = section.GetValue<string>("api_key");
+			_q = section.GetValue<string>("q");
+			_days = section.GetValue<int>("days");
+			_lang = section.GetValue<string>("lang");
 		}
 
-		public async Task<Result<Weather, ErrorList>> GetCurrentAsync(CancellationToken cancellationToken)
+		public async Task<Result<WeatherResponse, ErrorList>> GetCurrentAsync(CancellationToken cancellationToken)
 		{
 			ErrorList errorList = new ErrorList();
+			var section = _configuration.GetSection(nameof(WeatherApiClientService));
 
 			try
 			{
-				HttpResponseMessage response = await _httpClient.GetAsync(_current, cancellationToken);
-				if (response.IsSuccessStatusCode)
-				{
-					string jsonResponse = await response.Content.ReadAsStringAsync();
-					dynamic result = JsonConvert.DeserializeObject(jsonResponse);
-					if (result?.current is not null)
-					{
-						Result<Weather> weather = Weather.Create(result?.current);
-						if (weather.IsSuccess)
-						{
-							return weather.Value;
-						}
-						else
-						{
-							errorList.AddError(new Error(weather.Error, ErrorType.ServerError));
-							return Result.Failure<Weather, ErrorList>(errorList);
-						}
-					}
-					return Result.Success<Weather, ErrorList>(result);
+				WeatherResponse weatherResponse = await _weatherApi.GetCurrentWeatherAsync(_key, _q, _lang, cancellationToken);
+				if (weatherResponse is not null) {
+					return Result.Success<WeatherResponse, ErrorList>(weatherResponse);
 				}
+				
 				errorList.AddError(new Error("Invalid external I/O operation", ErrorType.External));
-				return Result.Failure<Weather, ErrorList>(errorList);
+				return Result.Failure<WeatherResponse, ErrorList>(errorList);
+			}
+			catch (OperationCanceledException)
+			{
+				errorList.AddError(new Error("Client Closed Request", ErrorType.Conflict));
 			}
 			catch (Exception)
 			{
 				errorList.AddError(new Error("Not correct parsing or external I/O operation", ErrorType.External));
-				return Result.Failure<Weather, ErrorList>(errorList);
 			}
+			return Result.Failure<WeatherResponse, ErrorList>(errorList);
 		}
-
-		public async Task<Result<WeatherDay[], ErrorList>> GetForecastAsync(CancellationToken cancellationToken)
-		{
-			Result<dynamic, ErrorList> valueForecastFromUrl = await _TryGetDataFromUrl(_forecast, cancellationToken);
-			if (valueForecastFromUrl.IsSuccess)
-			{
-				List<WeatherDay> result = new List<WeatherDay>();
-				var dayCollection = valueForecastFromUrl.Value?.forecast?.forecastday;
-				foreach(var day in dayCollection)
-				{
-					//todo: исправить
-					dynamic w = day.day;
-					DateTime wd = (DateTime)day.date;
-					Result<WeatherDay> d = WeatherDay.Create(w, wd);
-					if (d.IsSuccess)
-					{
-						result.Add(d.Value);
-					}
-				}
-				return valueForecastFromUrl.Value;
-			}
-			return Result.Failure<WeatherDay[], ErrorList>(valueForecastFromUrl.Error);
-		}
-
 		
-		private async Task<Result<dynamic, ErrorList>> _TryGetDataFromUrl(string uri, CancellationToken cancellationToken)
+		public async Task<Result<ForecastResponse, ErrorList>> GetForecastAsync(CancellationToken cancellationToken)
 		{
 			ErrorList errorList = new ErrorList();
 			try
 			{
-				HttpResponseMessage response = await _httpClient.GetAsync(uri, cancellationToken);
-				if (response.IsSuccessStatusCode)
+				ForecastResponse forecastResponse = await _weatherApi.GetForecastAsync(_key, _q, _days, _lang, cancellationToken);
+				if (forecastResponse is not null)
 				{
-					string jsonResponse = await response.Content.ReadAsStringAsync();
-					dynamic result = JsonConvert.DeserializeObject(jsonResponse);
-					return Result.Success<dynamic, ErrorList>(result);
+					return Result.Success<ForecastResponse, ErrorList>(forecastResponse);
 				}
+
 				errorList.AddError(new Error("Invalid external I/O operation", ErrorType.External));
-				return Result.Failure<dynamic, ErrorList>(errorList);
+				return Result.Failure<ForecastResponse, ErrorList>(errorList);
+			}
+			catch (OperationCanceledException)
+			{
+				errorList.AddError(new Error("Client Closed Request", ErrorType.Conflict));
 			}
 			catch (Exception)
 			{
 				errorList.AddError(new Error("Not correct parsing or external I/O operation", ErrorType.External));
-				return Result.Failure<dynamic, ErrorList>(errorList);
 			}
+			return Result.Failure<ForecastResponse, ErrorList>(errorList);
 		}
-		
 	}
 }
