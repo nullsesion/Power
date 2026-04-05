@@ -13,9 +13,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Power.WebApi", "src\Power.WebApi\Power.WebApi.csproj", "{89B7C1E3-30BA-4721-BE7C-2A234412E0F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Power.Application", "src\Power.Application\Power.Application.csproj", "{25CEC9DD-4950-4A13-9B7D-3ADBCB68E2AE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{BD7E35F2-3838-4431-9021-734C1035D9C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Power.Domain", "src\Power.Domain\Power.Domain.csproj", "{EC28BFFA-4FCB-4F7B-8319-076838A170A9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MoqWeatherServer", "MoqWeatherServer", "{D52708CA-46F2-4E3B-AA44-9453B3782E6B}"
+	ProjectSection(SolutionItems) = preProject
+		Infrastructure\MoqWeatherServer\v1\current.json = Infrastructure\MoqWeatherServer\v1\current.json
+		Infrastructure\MoqWeatherServer\v1\forecast.json = Infrastructure\MoqWeatherServer\v1\forecast.json
+		Infrastructure\MoqWeatherServer\README.MD = Infrastructure\MoqWeatherServer\README.MD
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,22 +32,14 @@ Global
 		{89B7C1E3-30BA-4721-BE7C-2A234412E0F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89B7C1E3-30BA-4721-BE7C-2A234412E0F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89B7C1E3-30BA-4721-BE7C-2A234412E0F3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{25CEC9DD-4950-4A13-9B7D-3ADBCB68E2AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{25CEC9DD-4950-4A13-9B7D-3ADBCB68E2AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{25CEC9DD-4950-4A13-9B7D-3ADBCB68E2AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{25CEC9DD-4950-4A13-9B7D-3ADBCB68E2AE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EC28BFFA-4FCB-4F7B-8319-076838A170A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EC28BFFA-4FCB-4F7B-8319-076838A170A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EC28BFFA-4FCB-4F7B-8319-076838A170A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EC28BFFA-4FCB-4F7B-8319-076838A170A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{89B7C1E3-30BA-4721-BE7C-2A234412E0F3} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
-		{25CEC9DD-4950-4A13-9B7D-3ADBCB68E2AE} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
-		{EC28BFFA-4FCB-4F7B-8319-076838A170A9} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{BD7E35F2-3838-4431-9021-734C1035D9C4} = {A127B205-1E3D-4FB1-BC10-07E6D487F6E1}
+		{D52708CA-46F2-4E3B-AA44-9453B3782E6B} = {BD7E35F2-3838-4431-9021-734C1035D9C4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F8619BE3-55F8-4B9A-953B-FA4B3127AF79}
