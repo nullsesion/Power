@@ -26,20 +26,20 @@ namespace Power.WebApi.Services
 			_lang = section.GetValue<string>("lang");
 		}
 
-		public async Task<Result<WeatherResponse, ErrorList>> GetCurrentAsync(CancellationToken cancellationToken)
+		public async Task<Result<WeatherResponseDTO, ErrorList>> GetCurrentAsync(CancellationToken cancellationToken)
 		{
 			ErrorList errorList = new ErrorList();
 			var section = _configuration.GetSection(nameof(WeatherApiClientService));
-
+			await Task.Delay(5000);
 			try
 			{
-				WeatherResponse weatherResponse = await _weatherApi.GetCurrentWeatherAsync(_key, _q, _lang, cancellationToken);
+				WeatherResponseDTO weatherResponse = await _weatherApi.GetCurrentWeatherAsync(_key, _q, _lang, cancellationToken);
 				if (weatherResponse is not null) {
-					return Result.Success<WeatherResponse, ErrorList>(weatherResponse);
+					return Result.Success<WeatherResponseDTO, ErrorList>(weatherResponse);
 				}
 				
 				errorList.AddError(new Error("Invalid external I/O operation", ErrorType.External));
-				return Result.Failure<WeatherResponse, ErrorList>(errorList);
+				return Result.Failure<WeatherResponseDTO, ErrorList>(errorList);
 			}
 			catch (OperationCanceledException)
 			{
@@ -49,22 +49,22 @@ namespace Power.WebApi.Services
 			{
 				errorList.AddError(new Error("Not correct parsing or external I/O operation", ErrorType.External));
 			}
-			return Result.Failure<WeatherResponse, ErrorList>(errorList);
+			return Result.Failure<WeatherResponseDTO, ErrorList>(errorList);
 		}
 		
-		public async Task<Result<ForecastResponse, ErrorList>> GetForecastAsync(CancellationToken cancellationToken)
+		public async Task<Result<ForecastResponseDTO, ErrorList>> GetForecastAsync(CancellationToken cancellationToken)
 		{
 			ErrorList errorList = new ErrorList();
 			try
 			{
-				ForecastResponse forecastResponse = await _weatherApi.GetForecastAsync(_key, _q, _days, _lang, cancellationToken);
+				ForecastResponseDTO forecastResponse = await _weatherApi.GetForecastAsync(_key, _q, _days, _lang, cancellationToken);
 				if (forecastResponse is not null)
 				{
-					return Result.Success<ForecastResponse, ErrorList>(forecastResponse);
+					return Result.Success<ForecastResponseDTO, ErrorList>(forecastResponse);
 				}
 
 				errorList.AddError(new Error("Invalid external I/O operation", ErrorType.External));
-				return Result.Failure<ForecastResponse, ErrorList>(errorList);
+				return Result.Failure<ForecastResponseDTO, ErrorList>(errorList);
 			}
 			catch (OperationCanceledException)
 			{
@@ -74,7 +74,7 @@ namespace Power.WebApi.Services
 			{
 				errorList.AddError(new Error("Not correct parsing or external I/O operation", ErrorType.External));
 			}
-			return Result.Failure<ForecastResponse, ErrorList>(errorList);
+			return Result.Failure<ForecastResponseDTO, ErrorList>(errorList);
 		}
 	}
 }

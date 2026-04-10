@@ -1,0 +1,73 @@
+@keyframes glassShine {
+    0% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 0.9;
+        background-position: 100% 0;
+    }
+
+    100% {
+        opacity: 0.8;
+    }
+}
+
+@keyframes slideStripes {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 34px 0;
+    }
+}
+
+.weather-card {
+    border-radius: 7px;
+    margin: 5px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 7px;
+    width: 100%;
+    position: relative;
+}
+
+    .weather-card.loading .weather-card__loading {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        border-radius: 7px;
+        background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+        background-size: 200% 100%;
+        background: repeating-linear-gradient( 45deg, #00d2ff, #3a7bd5 12px, #00d2ff 12px, #3a7bd5 24px );
+        animation: glassShine 3s ease infinite;
+        animation: slideStripes 0.5s linear infinite;
+        opacity: 0.5;
+        cursor: pointer;
+    }
+
+.weather-card.reload .weather-card__into_button {
+    display: block;
+}
+.weather-card .weather-card__into_button {
+    display: none;
+}
+
+.weather-card-row {
+    display: flex;
+    align-items: stretch;
+}
+.weather-card-col {
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+.weather-card__btn_forecast {
+
+}
+
+.footer[b-gbcjlwbovs] {
+    position: static !important; /* fix template asp.net */
+}

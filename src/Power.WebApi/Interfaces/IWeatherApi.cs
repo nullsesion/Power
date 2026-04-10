@@ -6,7 +6,7 @@ namespace Power.WebApi.Interfaces
 	public interface IWeatherApi
 	{
 		[Get("/v1/current.json")]
-		Task<WeatherResponse> GetCurrentWeatherAsync(
+		Task<WeatherResponseDTO> GetCurrentWeatherAsync(
 				[AliasAs("key")] string apiKey
 				, [AliasAs("q")] string query
 				, [AliasAs("lang")] string lang
@@ -14,7 +14,7 @@ namespace Power.WebApi.Interfaces
 			);
 				
 		[Get("/v1/forecast.json")]
-		Task<ForecastResponse> GetForecastAsync(
+		Task<ForecastResponseDTO> GetForecastAsync(
 			[AliasAs("key")] string apiKey
 			, [AliasAs("q")] string query
 			, [AliasAs("days")] int days

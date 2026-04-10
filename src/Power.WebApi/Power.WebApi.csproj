@@ -8,16 +8,16 @@
 
   <ItemGroup>
     <PackageReference Include="CSharpFunctionalExtensions" Version="3.7.0" />
+    <PackageReference Include="ExpressionDebugger" Version="2.2.1" />
+    <PackageReference Include="Mapster" Version="10.0.6" />
+    <PackageReference Include="Mapster.Async" Version="10.0.6" />
+    <PackageReference Include="Mapster.DependencyInjection" Version="10.0.6" />
     <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="10.0.5" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="Refit" Version="10.1.6" />
     <PackageReference Include="Refit.HttpClientFactory" Version="10.1.6" />
     <PackageReference Include="Refit.Newtonsoft.Json" Version="10.1.6" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Infrastructure\" />
   </ItemGroup>
 
 </Project>
