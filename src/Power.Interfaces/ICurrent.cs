@@ -1,10 +1,13 @@
-﻿using Newtonsoft.Json;
-using Power.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Power.WebApi.DomainModel
+namespace Power.Interfaces
 {
-	public record Current: ICurrent
-	{
+    public interface ICurrent
+    {
 		public string Region { get; set; }
 		public string Date { get; set; }
 		public decimal TempC { get; set; }

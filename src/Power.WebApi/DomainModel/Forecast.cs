@@ -1,7 +1,11 @@
-﻿namespace Power.WebApi.DomainModel
+﻿using Power.Interfaces;
+
+namespace Power.WebApi.DomainModel
 {
-	public class Forecast
+	public class Forecast : IForecast
 	{
-		public Current[] Days { get; set; } 
+		//public Current[] Days { get; set; }
+		ICurrent[] IForecast.Days { get; set; }
 	}
 }
+ 

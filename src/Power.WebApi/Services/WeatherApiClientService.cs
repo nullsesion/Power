@@ -30,7 +30,6 @@ namespace Power.WebApi.Services
 		{
 			ErrorList errorList = new ErrorList();
 			var section = _configuration.GetSection(nameof(WeatherApiClientService));
-			await Task.Delay(5000);
 			try
 			{
 				WeatherResponseDTO weatherResponse = await _weatherApi.GetCurrentWeatherAsync(_key, _q, _lang, cancellationToken);
@@ -58,6 +57,31 @@ namespace Power.WebApi.Services
 			try
 			{
 				ForecastResponseDTO forecastResponse = await _weatherApi.GetForecastAsync(_key, _q, _days, _lang, cancellationToken);
+				if (forecastResponse is not null)
+				{
+					return Result.Success<ForecastResponseDTO, ErrorList>(forecastResponse);
+				}
+
+				errorList.AddError(new Error("Invalid external I/O operation", ErrorType.External));
+				return Result.Failure<ForecastResponseDTO, ErrorList>(errorList);
+			}
+			catch (OperationCanceledException)
+			{
+				errorList.AddError(new Error("Client Closed Request", ErrorType.Conflict));
+			}
+			catch (Exception)
+			{
+				errorList.AddError(new Error("Not correct parsing or external I/O operation", ErrorType.External));
+			}
+			return Result.Failure<ForecastResponseDTO, ErrorList>(errorList);
+		}
+
+		public async Task<Result<ForecastResponseDTO, ErrorList>> GetHoursAsync(CancellationToken cancellationToken)
+		{
+			ErrorList errorList = new ErrorList();
+			try
+			{
+				ForecastResponseDTO forecastResponse = await _weatherApi.GetForecastAsync(_key, _q, 1, _lang, cancellationToken);
 				if (forecastResponse is not null)
 				{
 					return Result.Success<ForecastResponseDTO, ErrorList>(forecastResponse);

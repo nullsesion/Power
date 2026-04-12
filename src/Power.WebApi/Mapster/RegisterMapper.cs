@@ -27,6 +27,12 @@ namespace Power.WebApi.Mapster
 				.Map(current => current.ConditionText, forecastDayDTO => forecastDayDTO.Day.Condition.Text)
 				.Map(current => current.Icon, forecastDayDTO => forecastDayDTO.Day.Condition.Icon)
 				.RequireDestinationMemberSource(true);
+
+			config.ForType<HourDataDTO, Hour>()
+				.Map(current => current.Time, forecastDayDTO =>DateTime.Parse(forecastDayDTO.Time).ToString("HH.mm"))
+				.Map(current => current.TempC, forecastDayDTO => forecastDayDTO.TempC)
+				.RequireDestinationMemberSource(true);
+			
 		}
 
 	}

@@ -54,7 +54,9 @@
 .weather-card .weather-card__into_button {
     display: none;
 }
-
+.weather-card.has-error{
+    border: 1px solid red;
+}
 .weather-card-row {
     display: flex;
     align-items: stretch;

@@ -7,7 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CSharpFunctionalExtensions" Version="3.7.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.23" />
+    <PackageReference Include="Refit" Version="10.1.6" />
+    <PackageReference Include="Refit.HttpClientFactory" Version="10.1.6" />
+    <PackageReference Include="Refit.Newtonsoft.Json" Version="10.1.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Power.Interfaces\Power.Interfaces.csproj" />
   </ItemGroup>
 
 </Project>

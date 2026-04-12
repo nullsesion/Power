@@ -1,9 +1,8 @@
-﻿using Newtonsoft.Json;
-using Power.Interfaces;
+﻿using Power.Interfaces;
 
-namespace Power.WebApi.DomainModel
+namespace Power.WebApiApp.Models
 {
-	public record Current: ICurrent
+	public class WeatherResponseDTO : ICurrent
 	{
 		public string Region { get; set; }
 		public string Date { get; set; }

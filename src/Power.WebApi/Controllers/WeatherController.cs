@@ -2,6 +2,7 @@
 using MapsterMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Power.Interfaces;
 using Power.WebApi.DomainModel;
 using Power.WebApi.DomainModel.Dto;
 using Power.WebApi.Services;
@@ -66,6 +67,27 @@ namespace Power.WebApi.Controllers
 					; 
 				}).ToArray();
 								
+				return Results.Json(result);
+			}
+			else
+			{
+				return Results.BadRequest(forecast.Error);
+			}
+		}
+
+		/// <summary>
+		/// Получение прогноза по часам
+		/// </summary>
+		/// <param name="cancellationToken">используем cancellationToken для зависщих соединений</param>
+		/// <returns></returns>
+		[HttpGet("hours.json")]
+		public async Task<IResult> GetHoursAsync(CancellationToken cancellationToken)
+		{
+			Result<ForecastResponseDTO, ErrorList> forecast = await _clientWeatherService.GetHoursAsync(cancellationToken);
+			if (forecast.IsSuccess)
+			{
+				string region = forecast.Value?.Location?.Region ?? "";
+				var result = forecast.Value?.Forecast?.ForecastDays?.First()?.Hour?.Select(x => _mapper.Map<Hour>(x))?.ToArray();
 				return Results.Json(result);
 			}
 			else

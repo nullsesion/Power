@@ -89,25 +89,6 @@ namespace Power.WebApi
 			///////////////////////////////////////////////////////////////////
 			TypeAdapterConfig.GlobalSettings.Apply(new RegisterMapper());
 			builder.Services.AddMapster();
-			/*
-			builder.Services.AddSingleton(() =>
-			{
-				var config = new TypeAdapterConfig
-				{
-					Compiler = exp => exp.CompileWithDebugInfo(new ExpressionCompilationOptions
-					{
-						EmitFile = true,
-						ThrowOnFailedCompilation = true
-					})
-				};
-
-				new RegisterMapper().Register(config);
-
-				return config;
-			});
-			builder.Services.AddScoped<IMapper, ServiceMapper>();
-			*/
-			////////////////////////////////////////////////////////////
 
 			builder.Services.AddScoped<WeatherApiClientService>();
 
