@@ -1,0 +1,44 @@
+﻿@model WeatherResponseDTO
+
+<div class="col">
+	<div class="text-center">
+		<div class="container mt-6">
+			<div class="weather-card-row row justify-content-center">
+				<div class="weather-card-col">
+					<div class="weather-card loading card text-white bg-dark shadow-lg">
+							<div class="card-body p-4 text-center">
+								<div class="d-flex justify-content-between align-items-center mb-4">
+									<h5 class="card-title mb-0">
+										@Model.Region
+									</h5>
+									<p class="mb-0">
+										@Model.Date
+									</p>
+								</div>
+								<img src="@Model.Icon" class="img-fluid mb-3" alt="Weather Icon">
+								<h1 class="display-3 mb-0">
+									@Model.TempC °C
+								</h1>
+								<p class="lead mb-4">@Model.ConditionText</p>
+								<div class="row border-top pt-3">
+									<div class="col-6 border-end">
+										<p class="small mb-0">Ветер</p>
+										<p class="fw-bold mb-0">
+											@Model.WindKph km/h
+										</p>
+									</div>
+									<div class="col-6">
+										<p class="small mb-0">Влажность</p>
+										<p class="fw-bold mb-0">
+											@Model.Humidity%
+										</p>
+									</div>
+								</div>
+							</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

@@ -1,0 +1,20 @@
+.weather-card {
+    border-radius: 7px;
+    margin: 5px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 7px;
+    width: 100%;
+}
+
+.weather-card-row {
+    display: flex;
+    align-items: stretch;
+}
+.weather-card-col {
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+    border: 1px solid red;
+}
+
+

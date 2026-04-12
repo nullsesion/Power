@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - Power.WebApiApp</title>
+	<link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet" href="/Power.WebApiApp.styles.css" asp-append-version="true" />
+</head>
+<body>
+	<header>
+		<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+			<div class="container-fluid">
+				<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Power.WebApiApp</a>
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+						aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+					<ul class="navbar-nav flex-grow-1">
+						<li class="nav-item">
+							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</header>
+	<div class="container">
+		<main role="main" class="pb-3">
+<div class="text-center">
+
+    <div class="container mt-5">
+        <div id="js-weather-card" class="weather-card-row row justify-content-center">
+            <div class="weather-card-col col-md-4">
+                <div id="w1" class="weather-card card text-white bg-dark shadow-lg js-weather-card">
+                    <div class="js-weather-card__into">
+                       <button type="button" data-error="Выполнить запрос повторно" class="weather-card__btn btn btn-info js-weather-card__btn">Получить погоду на сегодня</button>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="weather-card-col col-md-4">
+                <div class="weather-card card text-white bg-dark shadow-lg js-weather-card">
+                    <div class="js-weather-card__into">
+                        <div class="card-body p-4 text-center">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="card-title mb-0">London, UK</h5>
+                                <p class="mb-0">Monday, 10:00 AM</p>
+                            </div>
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-weather/draw1.webp" class="img-fluid mb-3" alt="Weather Icon">
+                            <h1 class="display-3 mb-0" id="temp">12°C</h1>
+                            <p class="lead mb-4">Partly Cloudy</p>
+                            <div class="row border-top pt-3">
+                                <div class="col-6 border-end">
+                                    <p class="small mb-0">Wind</p>
+                                    <p class="fw-bold mb-0">5.2 km/h</p>
+                                </div>
+                                <div class="col-6">
+                                    <p class="small mb-0">Humidity</p>
+                                    <p class="fw-bold mb-0">68%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+</div>
+		</main>
+	</div>
+
+	<footer class="border-top footer text-muted">
+		<div class="container">
+			&copy; 2026 - Power.WebApiApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+		</div>
+	</footer>
+	<!--шаблонизатор карточки jQuery Templates-->
+	<script id="weather-card-tmpl" type="text/x-jsrender">
+		<div class="js-weather-card__into">
+			<div class="js-weather-card__into">
+				<div class="card-body p-4 text-center">
+					<div class="d-flex justify-content-between align-items-center mb-4">
+						<h5 class="card-title mb-0">{{:region}}</h5>
+						<p class="mb-0">{{:localTime}}</p>
+					</div>
+					<img src="{{:icon}}" class="img-fluid mb-3" alt="Weather Icon">
+					<h1 class="display-3 mb-0">
+						{{tempC}} &deg;C
+					</h1>
+				</div>
+			</div>
+		</div>
+	</script>
+	<!--шаблонизатор карточки jQuery Templates-->
+	<!--
+				<div class="card-body p-4 text-center">
+					<div class="d-flex justify-content-between align-items-center mb-4">
+						<h5 class="card-title mb-0">
+							{{:region}}
+						</h5>
+						<p class="mb-0">
+							{{:localTime}}
+						</p>
+					</div>
+				 <img src="{{:icon}}" class="img-fluid mb-3" alt="Weather Icon">
+				 <h1 class="display-3 mb-0">
+					 {{tempC}} °C
+				 </h1>
+				 <p class="lead mb-4">conditionText</p>
+					<div class="row border-top pt-3">
+						<div class="col-6 border-end">
+							<p class="small mb-0">Ветер</p>
+						<p class="fw-bold mb-0">
+							 {{:windKph}} km/h
+						</p>
+						</div>
+						<div class="col-6">
+							<p class="small mb-0">Влажность</p>
+						 <p class="fw-bold mb-0">
+							 {{:windKph}}%
+						 </p>
+						</div>
+					</div>
+				</div>
+	-->
+
+	<script src="/lib/jquery/dist/jquery.min.js"></script>
+	<script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="/js/vendor/jquery/jquery.tmpl.js"></script>
+	<script src="/js/vendor/jquery/jsrender.min.js"></script>
+	
+	<script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>
